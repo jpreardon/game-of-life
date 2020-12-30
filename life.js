@@ -4,6 +4,7 @@ var cellSize = 10
 var currentGrid = []
 var numPlays = 0
 var startSize = .35
+var startDensity = 7
 
 function populateGrid() {
     column = []
@@ -23,17 +24,13 @@ function populateGrid() {
 function seedGrid() {
     currentGrid.forEach(column => {
         column.forEach(cell => {
-            if (Math.floor((Math.random() * 10) + 1) > 7) {
-                if (cell.x > (columns / 2) - ((startSize * columns)/2) && cell.x < (columns / 2) + ((startSize * columns)/2)) {
-                    if (cell.y > (rows / 2) - ((startSize * rows)/2) && cell.y < (rows / 2) + ((startSize * rows)/2)) {
-                        cell.status = "alive"
-                    }
+            if ( inBounds(cell.x, cell.y) ) {
+                if (Math.floor((Math.random() * 10) + 1) > startDensity) {
+                    cell.status = "alive"
                 }
             }
         })
     })
-
-
 }
 
 function showGrid() {
@@ -165,4 +162,17 @@ function play() {
 function runIt() {
     setUp()
     setInterval(play, 500)
+}
+
+function inBounds(x, y) {
+    var left = (columns / 2) - ((startSize * columns) / 2)
+    var right = (columns / 2) + ((startSize * columns) / 2)
+    var top = (rows / 2 ) - ((startSize * rows) / 2)
+    var bottom = (rows / 2) + ((startSize * rows) /2 )
+
+    if (x > left && x < right && y > top && y < bottom) {
+        return true
+    } else {
+        return false
+    }
 }
