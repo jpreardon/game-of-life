@@ -5,6 +5,27 @@ var currentGrid = []
 var startSize = .35
 var startDensity = 7
 
+// Setup/Play Functions
+
+// Gets called by the onLoad event and gets things going
+function runIt() {
+    setUp()
+    setInterval(play, 500)
+}
+
+function setUp() {
+    document.getElementById("the-grid").setAttribute("style", `width: ${columns * cellSize}px`)
+    populateGrid()
+    seedGrid()
+    drawGrid()
+}
+
+function play() {
+    nextGen()
+    drawGrid()
+}
+
+// Initial grid creation, only called once on load
 function populateGrid() {
     column = []
     for(let x = 0; x < columns; x++){
@@ -20,6 +41,7 @@ function populateGrid() {
     }
 }
 
+// Adds some "live" cells to the grid to get things started
 function seedGrid() {
     currentGrid.forEach(column => {
         column.forEach(cell => {
@@ -32,6 +54,7 @@ function seedGrid() {
     })
 }
 
+// This function was only for initial debugging before writing to the browser window
 function showGrid() {
     var row = ""
     for(let y = 0; y < rows; y++) {
@@ -47,7 +70,8 @@ function showGrid() {
     }
 }
 
-function neighbors(x,y) {
+// Returns a list of 8 neighbors given for a given address
+function neighbors(x, y) {
     theNeighbors = []
 
     for (let diffX = -1; diffX < 2; diffX++) {
@@ -62,6 +86,7 @@ function neighbors(x,y) {
     return theNeighbors
 }
 
+// Used with neighbor function, returns whether a cell's address is within the range of the bounding box
 function inRange(x,y) {
     if (x < 0 || y < 0) {
         return false
@@ -74,6 +99,7 @@ function inRange(x,y) {
     }
 }
 
+// Used with neighbor function, returns true if the "me" is the same address as "neighbor"
 function me(me, neighbor) {
     if( (me[0] == neighbor[0]) && (me[1] == neighbor[1]) ){
         return true
@@ -82,6 +108,7 @@ function me(me, neighbor) {
     }
 }
 
+// Returns the number of live neighbors
 function numberOfLiveNeighbors(x, y) {
     myNeighbors = neighbors(x, y)
     liveCount = 0
@@ -92,7 +119,9 @@ function numberOfLiveNeighbors(x, y) {
     });
     return liveCount
 }
-function deadOrAlive(x,y) {
+
+// Returns whether a given cell should be "dead" or "alive" in the next generation based on the rules (see in-line comments for rules)
+function deadOrAlive(x, y) {
     liveNeighbors = numberOfLiveNeighbors(x, y)
     
     if (currentGrid[x][y].status == "dead") {
@@ -116,6 +145,7 @@ function deadOrAlive(x,y) {
     }
 }
 
+// Populates the grid with the next generation
 function nextGen() {
     var nextGrid = []
     column = []
@@ -133,6 +163,7 @@ function nextGen() {
     currentGrid = nextGrid
 }
 
+// Draws the current grid on the screen
 function drawGrid() {
     document.getElementById("the-grid").innerHTML = ""
     currentGrid.forEach(column => {
@@ -145,23 +176,7 @@ function drawGrid() {
     })
 }
 
-function setUp() {
-    document.getElementById("the-grid").setAttribute("style", `width: ${columns * cellSize}px`)
-    populateGrid()
-    seedGrid()
-    drawGrid()
-}
-
-function play() {
-    nextGen()
-    drawGrid()
-}
-
-function runIt() {
-    setUp()
-    setInterval(play, 500)
-}
-
+// Returns true if a given address is within the initial boundry (for seeding)
 function inBounds(x, y) {
     var left = (columns / 2) - ((startSize * columns) / 2)
     var right = (columns / 2) + ((startSize * columns) / 2)
