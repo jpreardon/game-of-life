@@ -1,8 +1,8 @@
-var rows = 200  
-var columns = 200
-var cellSize = 3
+var rows = 50     
+var columns = 50
+var cellSize = 5
 var currentGrid = []
-var startSize = .35
+var startSize = .75
 var startDensity = 7
 
 // Setup/Play Functions
@@ -55,23 +55,39 @@ function seedGrid() {
 }
 
 // Returns a list of 8 neighbors given for a given address
-function neighbors(x, y) {
+function neighbors(x, y, infinite = false) {
     theNeighbors = []
 
-    for (let diffX = -1; diffX < 2; diffX++) {
-        for (let diffY = -1; diffY < 2; diffY++) {
-                neighborX = x + diffX
-                neighborY = y + diffY
-                if ( inRange(neighborX, neighborY) && !me([x, y], [neighborX, neighborY]) ) {
-                    theNeighbors.push([neighborX, neighborY])
-                }
+    if ( infinite ) {
+        for (let diffX = -1; diffX < 2; diffX++) {
+            for (let diffY = -1; diffY < 2; diffY++) {
+                    neighborX = x + diffX
+                    neighborY = y + diffY
+                    // If out of range, need to add neighbors from other side of the grid
+                    if ( inRange(neighborX, neighborY) && !me([x, y], [neighborX, neighborY]) ) {
+                        theNeighbors.push([neighborX, neighborY])
+                    } else if ( !inRange(neighborX, neighborY) && !me([x, y], [neighborX, neighborY]) ){
+                        theNeighbors.push(altUniverse(neighborX, neighborY))
+                    }
+            }
+        }
+    } else {
+        for (let diffX = -1; diffX < 2; diffX++) {
+            for (let diffY = -1; diffY < 2; diffY++) {
+                    neighborX = x + diffX
+                    neighborY = y + diffY
+                    if ( inRange(neighborX, neighborY) && !me([x, y], [neighborX, neighborY]) ) {
+                        theNeighbors.push([neighborX, neighborY])
+                    }
+            }
         }
     }
+
     return theNeighbors
 }
 
 // Used with neighbor function, returns whether a cell's address is within the range of the bounding box
-function inRange(x,y) {
+function inRange(x, y) {
     if (x < 0 || y < 0) {
         return false
     } else if (x > columns - 1) {
@@ -81,6 +97,31 @@ function inRange(x,y) {
     } else {
         return true
     }
+}
+
+// Infinate canvas fun
+function altUniverse(x, y) {
+    var newX = x
+    var newY = y
+    
+    if ( x == (columns) ) {
+        newX = 0
+    }
+
+    if ( y == (rows) ) {
+        newY = 0
+    }
+
+    if ( x == -1 ) {
+        newX = columns - 1
+    }
+
+    if ( y == -1 ) { 
+        newY = rows - 1
+    }
+
+    return [newX, newY]
+
 }
 
 // Used with neighbor function, returns true if the "me" is the same address as "neighbor"
@@ -94,7 +135,7 @@ function me(me, neighbor) {
 
 // Returns the number of live neighbors
 function numberOfLiveNeighbors(x, y) {
-    myNeighbors = neighbors(x, y)
+    myNeighbors = neighbors(x, y, true)
     liveCount = 0
     myNeighbors.forEach(cell => {
         if (currentGrid[cell[0]][cell[1]].status == "alive") {
