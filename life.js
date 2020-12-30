@@ -2,8 +2,18 @@ var rows = 150
 var columns = 150
 var cellSize = 5
 var currentGrid = []
-var startSize = .40
+var startSize = .50
 var startDensity = 7
+
+// The Rules of Life
+// Any dead cell with exactly three live neighbours will come to life. 
+var birth = 3 // default 3
+// Any live cell with fewer than two live neighbours dies (referred to as underpopulation or exposure[1]).
+// Any live cell with more than three live neighbours dies (referred to as overpopulation or overcrowding).
+// Any live cell with two or three live neighbours lives, unchanged, to the next generation.
+var overPopulation = 3 // default 3
+var underPopulation = 2 // default 2
+
 
 // Setup/Play Functions
 
@@ -25,6 +35,8 @@ function play() {
     drawGrid()
 }
 
+// Grid Functions
+
 // Initial grid creation, only called once on load
 function populateGrid() {
     column = []
@@ -41,6 +53,24 @@ function populateGrid() {
     }
 }
 
+// Populates the grid with the next generation
+function nextGen() {
+    var nextGrid = []
+    column = []
+    for(let x = 0; x < columns; x++){
+        for(let y = 0; y < rows; y++) {
+            column.push({
+                x: x,
+                y: y,
+                status: deadOrAlive(x, y)
+            })
+        }
+        nextGrid.push(column)
+        column = []
+    }
+    currentGrid = nextGrid
+}
+
 // Adds some "live" cells to the grid to get things started
 function seedGrid() {
     currentGrid.forEach(column => {
@@ -54,7 +84,9 @@ function seedGrid() {
     })
 }
 
-// Returns a list of 8 neighbors given for a given address
+// Utility Functions
+
+// Returns an array of 8 neighbors given for a given address
 function neighbors(x, y) {
     theNeighbors = []
 
@@ -113,41 +145,18 @@ function deadOrAlive(x, y) {
     
     if (currentGrid[x][y].status == "dead") {
         // Any dead cell with exactly three live neighbours will come to life. */
-        if (liveNeighbors == 3) {
+        if (liveNeighbors == birth) {
             return "alive"
         } else {
             return "dead"
         }
     } else if (currentGrid[x][y].status == "alive") {
-        if (liveNeighbors < 2) {
-            // Any live cell with fewer than two live neighbours dies (referred to as underpopulation or exposure[1]).
-            return "dead"
-        } else if (liveNeighbors > 3) {
-            // Any live cell with more than three live neighbours dies (referred to as overpopulation or overcrowding).
-            return "dead"
-        } else if (liveNeighbors == 2 || liveNeighbors == 3 ) {
-            // Any live cell with two or three live neighbours lives, unchanged, to the next generation.
+        if (liveNeighbors >= underPopulation && liveNeighbors <= overPopulation) {
             return "alive"
+        } else {
+            return "dead"
         }
     }
-}
-
-// Populates the grid with the next generation
-function nextGen() {
-    var nextGrid = []
-    column = []
-    for(let x = 0; x < columns; x++){
-        for(let y = 0; y < rows; y++) {
-            column.push({
-                x: x,
-                y: y,
-                status: deadOrAlive(x,y)
-            })
-        }
-        nextGrid.push(column)
-        column = []
-    }
-    currentGrid = nextGrid
 }
 
 // Draws the current grid on the screen
