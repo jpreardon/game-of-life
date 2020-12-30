@@ -54,22 +54,6 @@ function seedGrid() {
     })
 }
 
-// This function was only for initial debugging before writing to the browser window
-function showGrid() {
-    var row = ""
-    for(let y = 0; y < rows; y++) {
-        for(let x = 0; x < columns; x++) {
-            if (currentGrid[x][y].status == "alive") {
-                row = row +  "X "
-            } else {
-                row = row + "O "
-            }
-        }
-        console.log(row)
-        row = ""
-    }
-}
-
 // Returns a list of 8 neighbors given for a given address
 function neighbors(x, y) {
     theNeighbors = []
