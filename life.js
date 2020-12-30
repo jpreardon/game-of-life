@@ -1,8 +1,7 @@
-var rows = 100
-var columns = 100
-var cellSize = 10
+var rows = 200  
+var columns = 200
+var cellSize = 3
 var currentGrid = []
-var numPlays = 0
 var startSize = .35
 var startDensity = 7
 
@@ -140,6 +139,7 @@ function drawGrid() {
         column.forEach(cell => {
             var cellContents = document.createElement("div")
             cellContents.setAttribute("class", `cell ${cell.status}`)
+            cellContents.setAttribute("style", `width: ${cellSize}px; height: ${cellSize}px`)
             document.getElementById("the-grid").appendChild(cellContents)
         })
     })
@@ -155,8 +155,6 @@ function setUp() {
 function play() {
     nextGen()
     drawGrid()
-    console.log(`Play: ${numPlays}`)
-    numPlays++
 }
 
 function runIt() {
