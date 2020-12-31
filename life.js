@@ -1,9 +1,9 @@
-var rows = 150    
-var columns = 150
+var rows = 100    
+var columns = 100
 var cellSize = 5
 var currentGrid = []
-var startSize = .50
-var startDensity = 7
+var startSize = .15
+var startDensity = 5
 
 // The Rules of Life
 // Any dead cell with exactly three live neighbours will come to life. 
