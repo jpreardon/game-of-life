@@ -2,8 +2,8 @@ var rows = 100
 var columns = 100
 var cellSize = 5
 var currentGrid = []
-var startSize = .15
-var startDensity = 5
+var startSize = .6
+var startDensity = 3
 
 // The Rules of Life
 // Any dead cell with exactly three live neighbours will come to life. 
@@ -13,7 +13,6 @@ var birth = 3 // default 3
 // Any live cell with two or three live neighbours lives, unchanged, to the next generation.
 var overPopulation = 3 // default 3
 var underPopulation = 2 // default 2
-
 
 // Setup/Play Functions
 
@@ -76,7 +75,7 @@ function seedGrid() {
     currentGrid.forEach(column => {
         column.forEach(cell => {
             if ( inBounds(cell.x, cell.y) ) {
-                if (Math.floor((Math.random() * 10) + 1) > startDensity) {
+                if (Math.floor((Math.random() * 10) + 1) < startDensity) {
                     cell.status = "alive"
                 }
             }
